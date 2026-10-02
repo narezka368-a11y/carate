@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расим Радикович | Тренер по Кёкусинкай карате</title>
+<!-- Сайт создан Кобутто -->
+<meta name="author" content="Кобутто">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;500;700&family=Inter:wght@300;400;600&family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #141414;
+    --panel-2: #1c1c1c;
+    --text: #f0f0f0;
+    --text-muted: #808080;
+    --red: #c8102e;
+    --red-dark: #8b0a1f;
+    --white: #ffffff;
+    --line: rgba(255,255,255,0.08);
+  }
+
+  [data-theme="light"] {
+    --bg: #f4f4f4;
+    --panel: #ffffff;
+    --panel-2: #eaeaea;
+    --text: #111111;
+    --text-muted: #666666;
+    --red: #c8102e;
+    --red-dark: #8b0a1f;
+    --white: #ffffff;
+    --line: rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    transition: background 0.5s ease, color 0.5s ease;
+    line-height: 1.6;
+    cursor: none;
+  }
+
+  /* ===== Кастомный курсор ===== */
+  .cursor {
+    position: fixed;
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+  }
+
+  .cursor-dot {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+  }
+
+  .cursor.hover {
+    width: 60px;
+    height: 60px;
+    background: rgba(200,16,46,0.15);
+  }
+
+  @media (max-width: 900px) {
+    body { cursor: auto; }
+    .cursor, .cursor-dot { display: none; }
+  }
+
+  /* ===== Прогресс-бар скролла ===== */
+  .scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--red), var(--red-dark));
+    z-index: 9998;
+    transition: width 0.1s ease;
+    box-shadow: 0 0 15px rgba(200,16,46,0.6);
+  }
+
+  /* ===== Фон ===== */
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.5;
+    transition: transform 0.3s ease-out;
+  }
+
+  .bg-kanji {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    color: var(--red);
+    opacity: 0.035;
+    transition: transform 0.3s ease-out;
+  }
+
+  .bg-kanji span {
+    position: absolute;
+    font-size: 380px;
+    line-height: 1;
+    animation: kanjiFloat 25s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .bg-kanji span:nth-child(1) { top: 5%; left: -3%; animation-delay: 0s; }
+  .bg-kanji span:nth-child(2) { top: 40%; right: -2%; animation-delay: 5s; font-size: 320px; }
+  .bg-kanji span:nth-child(3) { bottom: 5%; left: 20%; animation-delay: 10s; font-size: 280px; }
+
+  [data-theme="light"] .bg-kanji { opacity: 0.05; }
+
+  @keyframes kanjiFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+    50% { transform: translateY(-40px) rotate(5deg) scale(1.05); }
+  }
+
+  /* ===== Тема-переключатель ===== */
+  .theme-toggle {
+    position: fixed;
+    top: 24px; right: 24px;
+    width: 48px; height: 48px;
+    background: var(--panel);
+    border: 2px solid var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    overflow: hidden;
+  }
+
+  .theme-toggle:hover {
+    background: var(--red);
+    border-color: var(--red);
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 0 25px rgba(200,16,46,0.6);
+  }
+
+  .theme-toggle svg {
+    width: 22px; height: 22px;
+    stroke: var(--text);
+    fill: none;
+    stroke-width: 2;
+    position: absolute;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+
+  .theme-toggle:hover svg { stroke: var(--white); }
+  .theme-toggle .sun { transform: translateY(0); opacity: 1; }
+  .theme-toggle .moon { transform: translateY(60px); opacity: 0; }
+
+  [data-theme="light"] .theme-toggle .sun { transform: translateY(-60px); opacity: 0; }
+  [data-theme="light"] .theme-toggle .moon { transform: translateY(0); opacity: 1; }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 5%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+  }
+
+  .hero-text { position: relative; padding-left: 40px; }
+
+  .vertical-label {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 6px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    position: absolute;
+    left: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: slideInLeft 1s 0.5s ease both;
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateY(-50%) translateX(-30px); }
+    to { opacity: 0.8; transform: translateY(-50%) translateX(0); }
+  }
+
+  .accent-line {
+    width: 0;
+    height: 4px;
+    background: var(--red);
+    margin-bottom: 24px;
+    position: relative;
+    animation: lineGrow 1s 0.3s ease forwards;
+  }
+
+  @keyframes lineGrow {
+    to { width: 60px; }
+  }
+
+  .accent-line::after {
+    content: '';
+    position: absolute;
+    left: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 1px;
+    background: var(--red);
+    opacity: 0.4;
+    animation: lineGrow2 0.8s 0.8s ease forwards;
+  }
+
+  @keyframes lineGrow2 {
+    to { width: 40px; }
+  }
+
+  .kicker {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeInUp 0.8s 0.4s ease forwards;
+  }
+
+  .kicker::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 12px var(--red);
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 12px var(--red); }
+    50% { transform: scale(1.4); box-shadow: 0 0 20px var(--red), 0 0 30px var(--red); }
+  }
+
+  h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(48px, 7vw, 110px);
+    font-weight: 700;
+    line-height: 0.95;
+    margin-bottom: 24px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+  }
+
+  h1 .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(60px) rotateX(-90deg);
+    animation: wordDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transform-origin: bottom;
+  }
+
+  h1 .word:nth-child(1) { animation-delay: 0.5s; }
+  h1 .word:nth-child(2) { animation-delay: 0.7s; }
+
+  @keyframes wordDrop {
+    to { opacity: 1; transform: translateY(0) rotateX(0); }
+  }
+
+  h1 .last-name {
+    display: block;
+    color: var(--red);
+    position: relative;
+  }
+
+  h1 .last-name::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 8px;
+    background: var(--red);
+    margin-top: 12px;
+    opacity: 0.15;
+    animation: lineGrowWide 1s 1.2s ease forwards;
+  }
+
+  @keyframes lineGrowWide {
+    to { width: 100%; }
+  }
+
+  .subtitle {
+    font-size: 17px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    max-width: 500px;
+    border-left: 2px solid var(--red);
+    padding-left: 20px;
+    opacity: 0;
+    animation: fadeInUp 0.8s 1s ease forwards;
+  }
+
+  .subtitle .typed {
+    display: inline;
+  }
+
+  .subtitle .cursor-blink {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--red);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 0.8s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeInUp 0.8s 1.2s ease forwards;
+  }
+
+  .btn {
+    padding: 18px 36px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 100%, 14px 100%);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+  }
+
+  .btn-primary:hover::before { left: 100%; }
+
+  .btn-primary:hover {
+    background: var(--red-dark);
+    transform: translateY(-3px);
+    letter-spacing: 4px;
+    box-shadow: 0 15px 40px rgba(200,16,46,0.5);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--text);
+  }
+
+  .btn-outline:hover {
+    background: var(--text);
+    color: var(--bg);
+    transform: translateY(-3px);
+  }
+
+  /* ===== ФОТО ===== */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeInRight 1s 0.4s ease forwards;
+    will-change: transform;
+  }
+
+  @keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(60px) rotateY(-20deg); }
+    to { opacity: 1; transform: translateX(0) rotateY(0); }
+  }
+
+  .photo-frame {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 4/5;
+  }
+
+  .photo-frame::before,
+  .photo-frame::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--red);
+    z-index: 2;
+    animation: cornerPulse 3s ease-in-out infinite;
+  }
+
+  .photo-frame::before {
+    top: -12px; left: -12px;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .photo-frame::after {
+    bottom: -12px; right: -12px;
+    border-left: none;
+    border-top: none;
+    animation-delay: 1.5s;
+  }
+
+  @keyframes cornerPulse {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 0 transparent); }
+    50% { opacity: 0.6; filter: drop-shadow(0 0 15px var(--red)); }
+  }
+
+  .photo {
+    width: 100%;
+    height: 100%;
+    background-image: url('trainer.jpg');
+    background-size: cover;
+    background-position: center top;
+    position: relative;
+    filter: grayscale(0.15) contrast(1.05);
+    transition: filter 0.4s ease, transform 0.6s ease;
+    overflow: hidden;
+  }
+
+  .photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+    transform: translateX(-150%) translateY(-150%);
+    animation: photoShine 6s ease-in-out infinite;
+  }
+
+  @keyframes photoShine {
+    0%, 100% { transform: translateX(-150%) translateY(-150%); }
+    50% { transform: translateX(150%) translateY(150%); }
+  }
+
+  .photo-frame:hover .photo {
+    filter: grayscale(0) contrast(1.1) scale(1.03);
+  }
+
+  .photo-label {
+    position: absolute;
+    bottom: 30px;
+    left: -20px;
+    background: var(--red);
+    color: var(--white);
+    padding: 12px 28px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 500;
+    z-index: 3;
+    box-shadow: 0 10px 30px rgba(200,16,46,0.4);
+    animation: labelSlide 1s 1s ease both;
+  }
+
+  @keyframes labelSlide {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .photo-number {
+    position: absolute;
+    top: 20px;
+    right: -20px;
+    background: var(--panel);
+    color: var(--red);
+    padding: 12px 18px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 22px;
+    font-weight: 700;
+    border: 2px solid var(--red);
+    z-index: 3;
+    animation: numberSpin 1s 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes numberSpin {
+    from { opacity: 0; transform: rotate(-180deg) scale(0); }
+    to { opacity: 1; transform: rotate(0) scale(1); }
+  }
+
+  /* ===== Секции ===== */
+  section { padding: 110px 5%; position: relative; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  .section-num {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 60px;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+    opacity: 0.3;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .section-head:hover .section-num {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80px;
+    height: 100%;
+    background: var(--red);
+    animation: lineScan 3s ease-in-out infinite;
+  }
+
+  @keyframes lineScan {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(calc(100vw - 200px)); }
+  }
+
+  .section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(34px, 5vw, 60px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .section-title em {
+    font-style: normal;
+    color: var(--red);
+    position: relative;
+  }
+
+  /* ===== О тренере ===== */
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0;
+    border: 1px solid var(--line);
+  }
+
+  .about-card {
+    padding: 40px 32px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    transition: all 0.4s ease;
+    position: relative;
+    background: var(--panel);
+    overflow: hidden;
+  }
+
+  .about-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 4px; height: 0;
+    background: var(--red);
+    transition: height 0.4s ease;
+  }
+
+  .about-card:hover::before { height: 100%; }
+
+  .about-card:hover {
+    background: var(--panel-2);
+    transform: translateY(-4px);
+  }
+
+  .about-card .kanji-num {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    color: var(--red);
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    display: block;
+    font-weight: 700;
+    transition: transform 0.4s ease;
+  }
+
+  .about-card:hover .kanji-num { transform: translateX(8px); }
+
+  .about-card h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .about-card p {
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  /* ===== Программа ===== */
+  .program-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+
+  .program-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 30px;
+    align-items: center;
+    padding: 32px 20px;
+    border-bottom: 1px solid var(--line);
+    transition: all 0.4s ease;
+    position: relative;
+    cursor: default;
+  }
+
+  .program-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 0; height: 100%;
+    background: var(--red);
+    transition: width 0.4s ease;
+    z-index: -1;
+    opacity: 0.08;
+  }
+
+  .program-item:hover::before { width: 100%; }
+
+  .program-item:hover {
+    padding-left: 40px;
+    border-color: var(--red);
+  }
+
+  .program-num {
+    font-family: 'Oswald', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+    transition: transform 0.4s ease;
+    display: inline-block;
+  }
+
+  .program-item:hover .program-num {
+    transform: scale(1.2) rotate(-5deg);
+  }
+
+  .program-content h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 24px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .program-content p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .program-arrow {
+    font-size: 28px;
+    color: var(--red);
+    transition: transform 0.4s ease;
+    opacity: 0.3;
+    display: inline-block;
+  }
+
+  .program-item:hover .program-arrow {
+    transform: translateX(10px);
+    opacity: 1;
+  }
+
+  /* ===== Расписание ===== */
+  .schedule {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .schedule-day {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 36px 28px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .schedule-day::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 60px 60px 0;
+    border-color: transparent var(--red) transparent transparent;
+    transition: border-width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0.3;
+  }
+
+  .schedule-day:hover::before {
+    border-width: 0 100px 100px 0;
+    opacity: 1;
+  }
+
+  .schedule-day:hover {
+    transform: translateY(-8px);
+    border-color: var(--red);
+    box-shadow: 0 20px 50px rgba(200,16,46,0.2);
+  }
+
+  .schedule-day .kanji {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    color: var(--red);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+    font-weight: 700;
+  }
+
+  .schedule-day h4 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .schedule-time-big {
+    font-family: 'Oswald', sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    transition: transform 0.3s ease, letter-spacing 0.3s ease;
+  }
+
+  .schedule-day:hover .schedule-time-big {
+    transform: scale(1.05);
+    letter-spacing: 4px;
+  }
+
+  .schedule-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  /* ===== Контакты ===== */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0;
+    border: 1px solid var(--line);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .contact-item {
+    padding: 48px 32px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 0;
+    background: var(--red);
+    transition: height 0.4s ease;
+  }
+
+  .contact-item:hover::before { height: 4px; }
+
+  .contact-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(200,16,46,0.15), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .contact-item:hover::after { opacity: 1; }
+
+  .contact-item:hover {
+    background: var(--panel-2);
+    transform: translateY(-4px);
+  }
+
+  .contact-item .label {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .contact-item .value {
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .contact-item .arrow {
+    font-size: 20px;
+    color: var(--red);
+    transition: transform 0.3s ease;
+  }
+
+  .contact-item:hover .arrow { transform: translateX(12px); }
+
+  /* ===== Футер ===== */
+  footer {
+    padding: 50px 5% 40px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+    background: var(--panel);
+  }
+
+  footer .footer-main {
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  footer .footer-credit {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  footer .footer-credit::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(200,16,46,0.2), transparent);
+    transition: left 0.6s;
+  }
+
+  footer .footer-credit:hover::before { left: 100%; }
+
+  footer .footer-credit:hover {
+    border-color: var(--red);
+    color: var(--red);
+    transform: scale(1.05);
+  }
+
+  footer .footer-credit strong {
+    color: var(--red);
+    font-weight: 700;
+    letter-spacing: 3px;
+  }
+
+  /* ===== Появление ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .reveal-left { transform: translateX(-60px); }
+  .reveal-left.visible { transform: translateX(0); }
+
+  .reveal-right { transform: translateX(60px); }
+  .reveal-right.visible { transform: translateX(0); }
+
+  .reveal-scale { transform: scale(0.85); }
+  .reveal-scale.visible { transform: scale(1); }
+
+  /* ===== Адаптив ===== */
+  @media (max-width: 900px) {
+    .hero { padding: 80px 5%; }
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+    .hero-text { padding-left: 0; }
+    .vertical-label { display: none; }
+    .accent-line { margin: 0 auto 24px; }
+    .subtitle {
+      border-left: none;
+      border-top: 2px solid var(--red);
+      padding: 20px 0 0 0;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-group { justify-content: center; }
+    .photo-frame { max-width: 340px; margin: 0 auto; }
+    .photo-label { left: 0; }
+    .photo-number { right: 0; }
+    section { padding: 80px 5%; }
+    .section-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .section-num { font-size: 44px; }
+    .program-item { grid-template-columns: 60px 1fr; gap: 20px; }
+    .program-arrow { display: none; }
+    .theme-toggle { top: 16px; right: 16px; width: 42px; height: 42px; }
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 44px; }
+    .btn { padding: 15px 26px; font-size: 12px; letter-spacing: 2px; }
+    .program-num { font-size: 32px; }
+    .program-content h3 { font-size: 19px; }
+    .contact-item .value { font-size: 20px; }
+    .schedule-time-big { font-size: 28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Прогресс-бар скролла -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Кастомный курсор -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- Фон -->
+<div class="bg-grid" id="bgGrid"></div>
+<div class="bg-kanji" id="bgKanji">
+  <span>空</span>
+  <span>手</span>
+  <span>道</span>
+</div>
+
+<!-- Переключатель темы -->
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <svg class="sun" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </svg>
+  <svg class="moon" viewBox="0 0 24 24">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+</button>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-text">
+      <div class="vertical-label">空手道</div>
+      <div class="accent-line"></div>
+      <div class="kicker">Кёкусинкай карате</div>
+      <h1>
+        <span class="word">Расим</span>
+        <span class="word last-name">Радикович</span>
+      </h1>
+      <p class="subtitle">
+        <span class="typed" id="typed"></span><span class="cursor-blink"></span>
+      </p>
+      <div class="cta-group">
+        <a href="#contact" class="btn btn-primary" data-hover>Записаться →</a>
+        <a href="#about" class="btn btn-outline" data-hover>О тренере</a>
+      </div>
+    </div>
+    <div class="hero-visual" id="parallaxPhoto">
+      <div class="photo-frame">
+        <div class="photo"></div>
+        <div class="photo-label">Тренер</div>
+        <div class="photo-number">空</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- О ТРЕНЕРЕ -->
+<section id="about">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-num">壱</div>
+      <h2 class="section-title">О <em>тренере</em></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-card reveal reveal-left" data-hover>
+        <span class="kanji-num">壱 · Один</span>
+        <h3>Кёкусинкай</h3>
+        <p>Обучение по традиционной школе Кёкусинкай — одной из сильнейших школ карате в мире.</p>
+      </div>
+      <div class="about-card reveal" data-hover>
+        <span class="kanji-num">弐 · Два</span>
+        <h3>Наставник</h3>
+        <p>Передаёт ученикам не только технику, но и философию будо — уважение, терпение и силу духа.</p>
+      </div>
+      <div class="about-card reveal" data-hover>
+        <span class="kanji-num">参 · Три</span>
+        <h3>Дети</h3>
+        <p>Находит подход к каждому ребёнку. Занятия проходят в дружелюбной, но дисциплинированной атмосфере.</p>
+      </div>
+      <div class="about-card reveal reveal-right" data-hover>
+        <span class="kanji-num">四 · Четыре</span>
+        <h3>Взрослые</h3>
+        <p>Программа для любого уровня подготовки — от новичка до опытного каратиста. ОФП, техника, спарринги.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ПРОГРАММА -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-num">弐</div>
+      <h2 class="section-title">Что вас <em>ждёт</em></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="program-list">
+      <div class="program-item reveal" data-hover>
+        <div class="program-num" data-count="01">00</div>
+        <div class="program-content">
+          <h3>Техника</h3>
+          <p>Базовая и продвинутая техника ударов руками и ногами, стойки и передвижения.</p>
+        </div>
+        <div class="program-arrow">→</div>
+      </div>
+      <div class="program-item reveal" data-hover>
+        <div class="program-num" data-count="02">00</div>
+        <div class="program-content">
+          <h3>Сила и выносливость</h3>
+          <p>Функциональные тренировки, ОФП, работа на снарядах и укрепление тела.</p>
+        </div>
+        <div class="program-arrow">→</div>
+      </div>
+      <div class="program-item reveal" data-hover>
+        <div class="program-num" data-count="03">00</div>
+        <div class="program-content">
+          <h3>Дух и дисциплина</h3>
+          <p>Философия будо, уважение к старшим, контроль над эмоциями и внутренняя сила.</p>
+        </div>
+        <div class="program-arrow">→</div>
+      </div>
+      <div class="program-item reveal" data-hover>
+        <div class="program-num" data-count="04">00</div>
+        <div class="program-content">
+          <h3>Соревнования</h3>
+          <p>Подготовка к турнирам, спарринги, участие в республиканских и всероссийских чемпионатах.</p>
+        </div>
+        <div class="program-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- РАСПИСАНИЕ -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-num">参</div>
+      <h2 class="section-title">Расписание <em>тренировок</em></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="schedule">
+      <div class="schedule-day reveal reveal-scale" data-hover>
+        <span class="kanji">水 · Среда</span>
+        <h4>Среда</h4>
+        <div class="schedule-time-big">19:00 — 20:30</div>
+        <div class="schedule-label">Тренировка</div>
+      </div>
+      <div class="schedule-day reveal reveal-scale" data-hover>
+        <span class="kanji">金 · Пятница</span>
+        <h4>Пятница</h4>
+        <div class="schedule-time-big">19:00 — 20:30</div>
+        <div class="schedule-label">Тренировка</div>
+      </div>
+      <div class="schedule-day reveal reveal-scale" data-hover>
+        <span class="kanji">土 · Суббота</span>
+        <h4>Суббота</h4>
+        <div class="schedule-time-big">17:00 — 18:00</div>
+        <div class="schedule-label">Тренировка</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КОНТАКТЫ -->
+<section id="contact">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-num">四</div>
+      <h2 class="section-title">Свяжитесь <em>со мной</em></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="contact-grid">
+      <a href="tel:+79677795995" class="contact-item reveal reveal-left" data-hover data-magnetic>
+        <span class="label">電話 · Телефон</span>
+        <span class="value">+7 967 779-59-95</span>
+        <span class="arrow">→</span>
+      </a>
+      <a href="https://wa.me/79677795995" class="contact-item reveal reveal-right" data-hover data-magnetic>
+        <span class="label">WA · WhatsApp</span>
+        <span class="value">Написать</span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ФУТЕР -->
+<footer>
+  <div class="footer-main">
+    © 2025 Расим Радикович · Тренер по Кёкусинкай карате · Осу! 🥋
+  </div>
+  <div class="footer-credit" data-hover>
+    Сайт создан <strong>Кобутто</strong>
+  </div>
+</footer>
+
+<script>
+  // ===== Кастомный курсор =====
+  const cursor = document.getElementById('cursor');
+  const cursorDot = document.getElementById('cursorDot');
+  const hoverEls = document.querySelectorAll('[data-hover], a, button');
+
+  let mx = 0, my = 0, cx = 0, cy = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    cursorDot.style.left = mx + 'px';
+    cursorDot.style.top = my + 'px';
+  });
+
+  function animateCursor() {
+    cx += (mx - cx) * 0.15;
+    cy += (my - cy) * 0.15;
+    cursor.style.left = cx + 'px';
+    cursor.style.top = cy + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  hoverEls.forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  // ===== Прогресс-бар скролла =====
+  const scrollProgress = document.getElementById('scrollProgress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const p = (window.scrollY / h) * 100;
+    scrollProgress.style.width = p + '%';
+  });
+
+  // ===== Параллакс мыши =====
+  const parallaxPhoto = document.getElementById('parallaxPhoto');
+  const bgGrid = document.getElementById('bgGrid');
+  const bgKanji = document.getElementById('bgKanji');
+
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+    if (parallaxPhoto) {
+      parallaxPhoto.style.transform = `translate(${x * 15}px, ${y * 15}px)`;
+    }
+    if (bgKanji) {
+      bgKanji.style.transform = `translate(${x * -20}px, ${y * -20}px)`;
+    }
+    if (bgGrid) {
+      bgGrid.style.transform = `translate(${x * -8}px, ${y * -8}px)`;
+    }
+  });
+
+  // ===== Печатающийся текст =====
+  const typedEl = document.getElementById('typed');
+  const typedText = 'Тренер по Кёкусинкай карате. Обучаю детей и взрослых настоящему боевому искусству — технике, силе духа, дисциплине и уважению.';
+  let typedIndex = 0;
+
+  function typeChar() {
+    if (typedIndex < typedText.length) {
+      typedEl.textContent += typedText.charAt(typedIndex);
+      typedIndex++;
+      setTimeout(typeChar, 30);
+    }
+  }
+
+  // Запуск печати после появления подзаголовка
+  setTimeout(typeChar, 1200);
+
+  // ===== Переключение темы =====
+  const themeToggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  html.setAttribute('data-theme', savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+
+  // ===== Появление при скролле =====
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== Анимация счётчиков 01-04 =====
+  const counters = document.querySelectorAll('[data-count]');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = el.dataset.count;
+        let current = 0;
+        const interval = setInterval(() => {
+          current++;
+          el.textContent = String(current).padStart(2, '0');
+          if (current >= parseInt(target)) clearInterval(interval);
+        }, 60);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(c => counterObserver.observe(c));
+
+  // ===== Магнитный эффект на контактах =====
+  document.querySelectorAll('[data-magnetic]').forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty('--mx', x + '%');
+      el.style.setProperty('--my', y + '%');
+    });
+  });
+
+  // ===== Плавный скролл для якорей =====
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ===== Подпись создателя 😉 =====
+  console.log('%c🥋 Сайт создан Кобутто', 'color:#c8102e; font-size:16px; font-weight:bold;');
+</script>
+
+</body>
+</html>
